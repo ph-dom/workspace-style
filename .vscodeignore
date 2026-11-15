@@ -11,3 +11,5 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 sample/**
 test-fixture/**
+scripts/**
+l10n/README*.md

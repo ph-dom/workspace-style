@@ -4,13 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A VS Code extension (`workspace-style`) for multi-root workspaces. It marks each editor tab with the folder or repo the file belongs to, using a color, a badge, and an emoji or text prefix. The config lives in the `.code-workspace` file. User-facing strings (UI, setting descriptions, README) are in Spanish.
+A VS Code extension (`workspace-style`) for multi-root workspaces. It marks each editor tab with the folder or repo the file belongs to, using a color, a badge, and an emoji or text prefix. The config lives in the `.code-workspace` file. The README and docs are in Spanish. User-facing strings are localized (English base, Spanish translation); see "Localization" below.
 
 ## Commands
 
 - `npm run compile`: `tsc` from `src/` to `out/`. The `include` in `tsconfig.json` is limited to `src`, so the `.ts` files in `sample/` and `test-fixture/` are not compiled.
 - `npm run watch`: incremental compile. This is the default build task that F5 uses.
 - `npm run lint`: runs eslint on `src`.
+- `npm run l10n:export`: regenerates `l10n/bundle.l10n.json` from the `vscode.l10n.t` calls in `src/`.
+- `npm run l10n:check`: validates the l10n files (also part of `pretest`). Missing translations only warn; stale English bundle, unknown keys, and `{n}` mismatches fail.
 - `npm test`: compiles, lints, and runs the integration tests in a real VS Code instance (`@vscode/test-cli`, downloaded into `.vscode-test/`). The workspace opened is `test-fixture/test.code-workspace`.
 - Single test: `npx vscode-test --grep "<test name substring>"`. Compile first, because the runner executes `out/test/**/*.test.js`.
 - F5 ("Run Extension (sample workspace)") opens the Extension Development Host on `sample/sample.code-workspace`.
@@ -49,6 +51,14 @@ The extension cannot change the file icon, the background of a single tab, or th
   - extension → webview: `state`, `saved`.
 - The webview keeps a local draft. While the draft is dirty, external `state` updates refresh the folder list but not the styles.
 - `saveStyles` keeps entries for folders that are not currently open in the workspace.
+
+## Localization
+
+- Uses VS Code's built-in l10n: the language comes from `vscode.env.language`, and anything without a translation falls back to English.
+- Extension code: `vscode.l10n.t('English text')`, with the English text as the key. Call it as `vscode.l10n.t` directly; the `@vscode/l10n-dev` extractor misses aliases. Translations go in `l10n/bundle.l10n.<lang>.json`.
+- `package.json`: `%key%` placeholders, English in `package.nls.json`, translations in `package.nls.<lang>.json`.
+- Webview: `media/panel.js` can't call `vscode.l10n`. Its strings are defined in `webviewStrings()` (`src/i18n.ts`), sent in the `state` message, and read with `t('key')`. Static HTML in `panel.ts` is localized server-side and HTML-escaped.
+- After changing any string: run `npm run l10n:export` and update `bundle.l10n.es.json` / `package.nls.es.json`. The contributor guide is `l10n/README.md` (English) with a Spanish copy in `l10n/README.es.md`; keep both in sync.
 
 ## Tests
 

@@ -1,7 +1,7 @@
 {
   "name": "workspace-style",
   "displayName": "Workspace Style",
-  "description": "Identifica con colores, badges y prefijos de qué carpeta o repositorio viene cada pestaña en un workspace multi-root.",
+  "description": "%extension.description%",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.146.0"
@@ -13,17 +13,18 @@
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "commands": [
       {
         "command": "workspaceStyle.openSettings",
-        "title": "Personalizar carpetas",
+        "title": "%command.openSettings.title%",
         "category": "Workspace Style",
         "icon": "$(symbol-color)"
       },
       {
         "command": "workspaceStyle.resync",
-        "title": "Re-aplicar estilos",
+        "title": "%command.resync.title%",
         "category": "Workspace Style"
       }
     ],
@@ -34,7 +35,7 @@
           "type": "object",
           "scope": "resource",
           "default": {},
-          "markdownDescription": "Estilo por carpeta del workspace (la clave es el nombre de la carpeta). Se edita desde **Workspace Style: Personalizar carpetas**.",
+          "markdownDescription": "%config.folders.description%",
           "additionalProperties": {
             "type": "object",
             "additionalProperties": false,
@@ -42,20 +43,20 @@
               "color": {
                 "type": "string",
                 "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-                "description": "Color hex del nombre en pestañas, Explorer y barra de estado."
+                "description": "%config.folders.color.description%"
               },
               "badge": {
                 "type": "string",
                 "maxLength": 2,
-                "description": "Badge corto (máx. 2 caracteres o 1 emoji)."
+                "description": "%config.folders.badge.description%"
               },
               "emoji": {
                 "type": "string",
-                "description": "Emoji agregado al nombre de la pestaña."
+                "description": "%config.folders.emoji.description%"
               },
               "label": {
                 "type": "string",
-                "description": "Texto/abreviatura agregado al nombre de la pestaña."
+                "description": "%config.folders.label.description%"
               },
               "labelPosition": {
                 "type": "string",
@@ -63,7 +64,11 @@
                   "prefix",
                   "suffix"
                 ],
-                "default": "suffix"
+                "default": "suffix",
+                "enumDescriptions": [
+                  "%config.folders.labelPosition.prefix%",
+                  "%config.folders.labelPosition.suffix%"
+                ]
               }
             }
           }
@@ -71,22 +76,22 @@
         "workspaceStyle.decorations.color": {
           "type": "boolean",
           "default": true,
-          "description": "Colorear el nombre de los archivos según su carpeta."
+          "description": "%config.decorations.color.description%"
         },
         "workspaceStyle.decorations.badge": {
           "type": "boolean",
           "default": true,
-          "description": "Mostrar el badge de la carpeta en pestañas y Explorer."
+          "description": "%config.decorations.badge.description%"
         },
         "workspaceStyle.tabLabels.enabled": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Agregar emoji/texto al nombre de las pestañas mediante `#workbench.editor.customLabels.patterns#`."
+          "markdownDescription": "%config.tabLabels.enabled.description%"
         },
         "workspaceStyle.statusBar.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Mostrar la carpeta del archivo activo en la barra de estado."
+          "description": "%config.statusBar.enabled.description%"
         },
         "workspaceStyle.managedLabelPatterns": {
           "type": "array",
@@ -94,14 +99,14 @@
             "type": "string"
           },
           "default": [],
-          "markdownDescription": "Uso interno: patrones de `workbench.editor.customLabels.patterns` generados por la extensión. No editar."
+          "markdownDescription": "%config.managedLabelPatterns.description%"
         }
       }
     },
     "colors": [
       {
         "id": "workspaceStyle.slot1",
-        "description": "Workspace Style: color de carpeta #1",
+        "description": "%color.slot1.description%",
         "defaults": {
           "dark": "#E34234",
           "light": "#E34234",
@@ -111,7 +116,7 @@
       },
       {
         "id": "workspaceStyle.slot2",
-        "description": "Workspace Style: color de carpeta #2",
+        "description": "%color.slot2.description%",
         "defaults": {
           "dark": "#1E56D9",
           "light": "#1E56D9",
@@ -121,7 +126,7 @@
       },
       {
         "id": "workspaceStyle.slot3",
-        "description": "Workspace Style: color de carpeta #3",
+        "description": "%color.slot3.description%",
         "defaults": {
           "dark": "#F25C19",
           "light": "#F25C19",
@@ -131,7 +136,7 @@
       },
       {
         "id": "workspaceStyle.slot4",
-        "description": "Workspace Style: color de carpeta #4",
+        "description": "%color.slot4.description%",
         "defaults": {
           "dark": "#D926A9",
           "light": "#D926A9",
@@ -141,7 +146,7 @@
       },
       {
         "id": "workspaceStyle.slot5",
-        "description": "Workspace Style: color de carpeta #5",
+        "description": "%color.slot5.description%",
         "defaults": {
           "dark": "#7C3AED",
           "light": "#7C3AED",
@@ -151,7 +156,7 @@
       },
       {
         "id": "workspaceStyle.slot6",
-        "description": "Workspace Style: color de carpeta #6",
+        "description": "%color.slot6.description%",
         "defaults": {
           "dark": "#F06464",
           "light": "#F06464",
@@ -161,7 +166,7 @@
       },
       {
         "id": "workspaceStyle.slot7",
-        "description": "Workspace Style: color de carpeta #7",
+        "description": "%color.slot7.description%",
         "defaults": {
           "dark": "#EC1C77",
           "light": "#EC1C77",
@@ -171,7 +176,7 @@
       },
       {
         "id": "workspaceStyle.slot8",
-        "description": "Workspace Style: color de carpeta #8",
+        "description": "%color.slot8.description%",
         "defaults": {
           "dark": "#1D8FE1",
           "light": "#1D8FE1",
@@ -181,7 +186,7 @@
       },
       {
         "id": "workspaceStyle.slot9",
-        "description": "Workspace Style: color de carpeta #9",
+        "description": "%color.slot9.description%",
         "defaults": {
           "dark": "#C81E4B",
           "light": "#C81E4B",
@@ -191,7 +196,7 @@
       },
       {
         "id": "workspaceStyle.slot10",
-        "description": "Workspace Style: color de carpeta #10",
+        "description": "%color.slot10.description%",
         "defaults": {
           "dark": "#5A3FD6",
           "light": "#5A3FD6",
@@ -201,7 +206,7 @@
       },
       {
         "id": "workspaceStyle.slot11",
-        "description": "Workspace Style: color de carpeta #11",
+        "description": "%color.slot11.description%",
         "defaults": {
           "dark": "#FF9E64",
           "light": "#FF9E64",
@@ -211,7 +216,7 @@
       },
       {
         "id": "workspaceStyle.slot12",
-        "description": "Workspace Style: color de carpeta #12",
+        "description": "%color.slot12.description%",
         "defaults": {
           "dark": "#FFB3D9",
           "light": "#FFB3D9",
@@ -221,7 +226,7 @@
       },
       {
         "id": "workspaceStyle.slot13",
-        "description": "Workspace Style: color de carpeta #13",
+        "description": "%color.slot13.description%",
         "defaults": {
           "dark": "#C9A2FF",
           "light": "#C9A2FF",
@@ -231,7 +236,7 @@
       },
       {
         "id": "workspaceStyle.slot14",
-        "description": "Workspace Style: color de carpeta #14",
+        "description": "%color.slot14.description%",
         "defaults": {
           "dark": "#7AA2FF",
           "light": "#7AA2FF",
@@ -241,7 +246,7 @@
       },
       {
         "id": "workspaceStyle.slot15",
-        "description": "Workspace Style: color de carpeta #15",
+        "description": "%color.slot15.description%",
         "defaults": {
           "dark": "#5FD4FF",
           "light": "#5FD4FF",
@@ -251,7 +256,7 @@
       },
       {
         "id": "workspaceStyle.slot16",
-        "description": "Workspace Style: color de carpeta #16",
+        "description": "%color.slot16.description%",
         "defaults": {
           "dark": "#FF5FC1",
           "light": "#FF5FC1",
@@ -261,7 +266,7 @@
       },
       {
         "id": "workspaceStyle.slot17",
-        "description": "Workspace Style: color de carpeta #17",
+        "description": "%color.slot17.description%",
         "defaults": {
           "dark": "#E57CFF",
           "light": "#E57CFF",
@@ -271,7 +276,7 @@
       },
       {
         "id": "workspaceStyle.slot18",
-        "description": "Workspace Style: color de carpeta #18",
+        "description": "%color.slot18.description%",
         "defaults": {
           "dark": "#FF8FA3",
           "light": "#FF8FA3",
@@ -281,7 +286,7 @@
       },
       {
         "id": "workspaceStyle.slot19",
-        "description": "Workspace Style: color de carpeta #19",
+        "description": "%color.slot19.description%",
         "defaults": {
           "dark": "#C387C3",
           "light": "#C387C3",
@@ -291,7 +296,7 @@
       },
       {
         "id": "workspaceStyle.slot20",
-        "description": "Workspace Style: color de carpeta #20",
+        "description": "%color.slot20.description%",
         "defaults": {
           "dark": "#E18700",
           "light": "#E18700",
@@ -305,19 +310,22 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "npm run compile && npm run lint && npm run l10n:check",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "l10n:export": "vscode-l10n-dev export --outDir ./l10n ./src",
+    "l10n:check": "node scripts/check-l10n.mjs"
   },
   "devDependencies": {
-    "@types/vscode": "^1.146.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "24.x",
-    "typescript-eslint": "^8.61.1",
+    "@types/vscode": "^1.146.0",
+    "@vscode/l10n-dev": "^0.0.35",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
     "eslint": "^10.5.0",
     "typescript": "^6.0.3",
-    "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^3.0.0"
+    "typescript-eslint": "^8.61.1"
   },
   "overrides": {
     "diff": "^8.0.4",

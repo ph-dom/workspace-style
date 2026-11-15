@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { FolderStyles, PALETTE, readStyles, saveStyles } from './config';
+import { uiLanguage, webviewStrings } from './i18n';
 
 interface IncomingMessage {
 	type: 'ready' | 'save' | 'openWorkspaceFile';
@@ -47,9 +48,9 @@ export class StylePanel {
 				try {
 					await saveStyles(msg.styles ?? {});
 					this.panel.webview.postMessage({ type: 'saved' });
-					vscode.window.setStatusBarMessage('$(check) Workspace Style: estilos guardados', 3000);
+					vscode.window.setStatusBarMessage(`$(check) ${vscode.l10n.t('Workspace Style: styles saved')}`, 3000);
 				} catch (err) {
-					vscode.window.showErrorMessage(`Workspace Style: no se pudo guardar: ${String(err)}`);
+					vscode.window.showErrorMessage(vscode.l10n.t('Workspace Style: could not save: {0}', String(err)));
 				}
 				break;
 			case 'openWorkspaceFile': {
@@ -73,14 +74,16 @@ export class StylePanel {
 			palette: PALETTE,
 			workspaceFile: file?.scheme === 'file' ? file.fsPath : undefined,
 			untitledWorkspace: file?.scheme === 'untitled',
+			strings: webviewStrings(),
 		});
 	}
 
 	private html(webview: vscode.Webview, extensionUri: vscode.Uri): string {
 		const media = (f: string) => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', f));
+		const esc = (s: string) => s.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 		const nonce = Array.from({ length: 32 }, () => Math.floor(Math.random() * 36).toString(36)).join('');
 		return /* html */ `<!DOCTYPE html>
-<html lang="es">
+<html lang="${uiLanguage()}">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
@@ -92,18 +95,18 @@ export class StylePanel {
 <div id="notice" class="notice" hidden></div>
 <div class="layout">
 	<aside>
-		<h2>Carpetas</h2>
-		<ul id="folders" role="listbox" aria-label="Carpetas del workspace"></ul>
-		<button id="auto" class="secondary" title="Asigna color y badge a las carpetas sin estilo">Auto-asignar</button>
+		<h2>${esc(vscode.l10n.t('Folders'))}</h2>
+		<ul id="folders" role="listbox" aria-label="${esc(vscode.l10n.t('Workspace folders'))}"></ul>
+		<button id="auto" class="secondary" title="${esc(vscode.l10n.t('Assign a color and badge to folders without a style'))}">${esc(vscode.l10n.t('Auto-assign'))}</button>
 	</aside>
 	<main id="editor">
-		<p class="empty">El workspace no tiene carpetas.</p>
+		<p class="empty">${esc(vscode.l10n.t('The workspace has no folders.'))}</p>
 	</main>
 </div>
 <footer>
-	<span id="dirty" hidden>Cambios sin guardar</span>
-	<button id="discard" class="secondary">Descartar</button>
-	<button id="save">Guardar en .code-workspace</button>
+	<span id="dirty" hidden>${esc(vscode.l10n.t('Unsaved changes'))}</span>
+	<button id="discard" class="secondary">${esc(vscode.l10n.t('Discard'))}</button>
+	<button id="save">${esc(vscode.l10n.t('Save to .code-workspace'))}</button>
 </footer>
 <script nonce="${nonce}" src="${media('panel.js')}"></script>
 </body>

@@ -28,7 +28,7 @@ export class FolderStatusBar implements vscode.Disposable {
 		const prefix = style?.emoji ? `${style.emoji} ` : '';
 		this.item.text = `$(repo) ${prefix}${folder.name}`;
 		this.item.color = this.state.themeColorFor(folder);
-		this.item.tooltip = `${folder.uri.fsPath}\nClick para personalizar`;
+		this.item.tooltip = `${folder.uri.fsPath}\n${vscode.l10n.t('Click to customize')}`;
 		this.item.show();
 	}
 

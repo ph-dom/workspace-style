@@ -7,3 +7,4 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [Unreleased]
 
 - Initial release
+- Interfaz, comandos y settings localizados en inglés y español según el idioma de VS Code (inglés por defecto).

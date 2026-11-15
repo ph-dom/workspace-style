@@ -15,6 +15,11 @@
 	let draft = {};
 	let selected = '';
 	let dirty = false;
+	/** @type {Record<string, string>} localized strings sent by the extension (src/i18n.ts) */
+	let strings = {};
+
+	/** Localized string for `key`; falls back to the key itself so a missing entry is visible but harmless. */
+	const t = (/** @type {string} */ key) => strings[key] ?? key;
 
 	const $ = (/** @type {string} */ id) => /** @type {HTMLElement} */ (document.getElementById(id));
 
@@ -106,18 +111,18 @@
 		const main = $('editor');
 		const folder = folders.find(f => f.name === selected);
 		if (!folder) {
-			main.replaceChildren(el('p', { class: 'empty', text: 'El workspace no tiene carpetas.' }));
+			main.replaceChildren(el('p', { class: 'empty', text: t('noFolders') }));
 			return;
 		}
 		const s = styleOf(folder.name);
 
 		// Color
 		const picker = /** @type {HTMLInputElement} */ (el('input', {
-			type: 'color', value: s.color ?? palette[0] ?? '#1E56D9', title: 'Color personalizado',
+			type: 'color', value: s.color ?? palette[0] ?? '#1E56D9', title: t('customColor'),
 			oninput: (/** @type {Event} */ e) => { update('color', /** @type {HTMLInputElement} */ (e.target).value); markSwatch(); },
 		}));
-		const swatches = el('div', { class: 'swatches', role: 'group', 'aria-label': 'Paleta' }, [
-			el('button', { class: 'swatch none', title: 'Sin color', 'aria-label': 'Sin color', 'data-color': '', onclick: () => { update('color', undefined); markSwatch(); } }),
+		const swatches = el('div', { class: 'swatches', role: 'group', 'aria-label': t('palette') }, [
+			el('button', { class: 'swatch none', title: t('noColor'), 'aria-label': t('noColor'), 'data-color': '', onclick: () => { update('color', undefined); markSwatch(); } }),
 			...palette.map(c => {
 				const b = el('button', { class: 'swatch', title: c, 'aria-label': c, 'data-color': c, onclick: () => { update('color', c); picker.value = c; markSwatch(); } });
 				b.style.background = c;
@@ -134,14 +139,14 @@
 			type: 'text', value: s[key] ?? '', ...extra,
 			oninput: (/** @type {Event} */ e) => update(key, /** @type {HTMLInputElement} */ (e.target).value.trim()),
 		}));
-		const badgeInput = textInput('badge', { class: 'short', maxlength: 2, 'aria-label': 'Badge' });
-		const emojiInput = textInput('emoji', { class: 'short', maxlength: 8, 'aria-label': 'Emoji' });
-		const labelInput = textInput('label', { class: 'mid', maxlength: 24, 'aria-label': 'Texto en el nombre' });
+		const badgeInput = textInput('badge', { class: 'short', maxlength: 2, 'aria-label': t('badge') });
+		const emojiInput = textInput('emoji', { class: 'short', maxlength: 8, 'aria-label': t('emoji') });
+		const labelInput = textInput('label', { class: 'mid', maxlength: 24, 'aria-label': t('labelText') });
 
 		const position = /** @type {HTMLSelectElement} */ (el('select', {
-			'aria-label': 'Posición',
+			'aria-label': t('position'),
 			onchange: (/** @type {Event} */ e) => update('labelPosition', /** @type {HTMLSelectElement} */ (e.target).value === 'prefix' ? 'prefix' : undefined),
-		}, [el('option', { value: 'suffix', text: 'Después del nombre' }), el('option', { value: 'prefix', text: 'Antes del nombre' })]));
+		}, [el('option', { value: 'suffix', text: t('afterName') }), el('option', { value: 'prefix', text: t('beforeName') })]));
 		position.value = s.labelPosition === 'prefix' ? 'prefix' : 'suffix';
 
 		const emojiButtons = (/** @type {HTMLInputElement} */ target, /** @type {string} */ key) => el('div', { class: 'row' }, EMOJIS.map(em =>
@@ -149,25 +154,25 @@
 
 		main.replaceChildren(
 			el('div', {}, [el('h3', { text: folder.name }), el('p', { class: 'path', text: folder.path })]),
-			el('div', { class: 'field' }, [el('h2', { text: 'Vista previa' }), el('div', { id: 'preview', class: 'preview' })]),
+			el('div', { class: 'field' }, [el('h2', { text: t('preview') }), el('div', { id: 'preview', class: 'preview' })]),
 			el('div', { class: 'field' }, [
-				el('h2', { text: 'Color del nombre' }),
+				el('h2', { text: t('nameColor') }),
 				el('div', { class: 'row' }, [swatches, picker]),
-				el('p', { class: 'hint', text: 'Colorea el nombre en la pestaña, en el Explorer y en la barra de estado. Las decoraciones de git (archivo modificado, etc.) pueden reemplazarlo.' }),
+				el('p', { class: 'hint', text: t('nameColorHint') }),
 			]),
 			el('div', { class: 'field' }, [
-				el('h2', { text: 'Badge (máx. 2 caracteres)' }),
-				el('div', { class: 'row' }, [badgeInput, el('button', { class: 'link', text: 'Usar iniciales', onclick: () => { const v = initials(folder.name); badgeInput.value = v; update('badge', v); } })]),
+				el('h2', { text: t('badgeTitle') }),
+				el('div', { class: 'row' }, [badgeInput, el('button', { class: 'link', text: t('useInitials'), onclick: () => { const v = initials(folder.name); badgeInput.value = v; update('badge', v); } })]),
 				emojiButtons(badgeInput, 'badge'),
-				el('p', { class: 'hint', text: 'Aparece a la derecha del nombre en la pestaña. También acepta un emoji.' }),
+				el('p', { class: 'hint', text: t('badgeHint') }),
 			]),
 			el('div', { class: 'field' }, [
-				el('h2', { text: 'Texto en el nombre de la pestaña' }),
-				el('div', { class: 'row' }, [el('label', { text: 'Emoji' }), emojiInput, el('label', { text: 'Texto' }), labelInput, position]),
+				el('h2', { text: t('tabText') }),
+				el('div', { class: 'row' }, [el('label', { text: t('emoji') }), emojiInput, el('label', { text: t('text') }), labelInput, position]),
 				emojiButtons(emojiInput, 'emoji'),
-				el('p', { class: 'hint', text: 'Se aplica con workbench.editor.customLabels.patterns. Es la única forma de poner un "icono" por repo, porque el icono del archivo depende del tema de iconos.' }),
+				el('p', { class: 'hint', text: t('tabTextHint') }),
 			]),
-			el('div', { class: 'row' }, [el('button', { class: 'secondary', text: 'Quitar estilo de esta carpeta', onclick: () => { draft[selected] = {}; setDirty(true); renderList(); renderEditor(); } })]),
+			el('div', { class: 'row' }, [el('button', { class: 'secondary', text: t('removeStyle'), onclick: () => { draft[selected] = {}; setDirty(true); renderList(); renderEditor(); } })]),
 		);
 		markSwatch();
 		renderPreview();
@@ -211,6 +216,7 @@
 		if (msg.type === 'state') {
 			folders = msg.folders;
 			palette = msg.palette;
+			strings = msg.strings ?? {};
 			saved = msg.styles;
 			if (!dirty) { draft = clone(saved); }
 			if (!folders.some(f => f.name === selected)) { selected = folders[0]?.name ?? ''; }
@@ -230,8 +236,8 @@
 		}
 		n.hidden = false;
 		n.textContent = msg.untitledWorkspace
-			? 'Este workspace aún no está guardado. Usa "File > Save Workspace As..." para guardar los estilos en un archivo .code-workspace.'
-			: 'No hay un .code-workspace abierto. Los estilos se guardarán en .vscode/settings.json de la carpeta.';
+			? t('untitledWorkspace')
+			: t('noWorkspaceFile');
 	}
 
 	vscode.postMessage({ type: 'ready' });

@@ -45,7 +45,12 @@ Si se edita `workspaceStyle.folders` a mano, los ajustes derivados se regeneran 
 - `workspaceStyle.tabLabels.enabled`
 - `workspaceStyle.statusBar.enabled`
 
+## Idiomas
+
+La interfaz está en inglés y español, y sigue el idioma de VS Code (los idiomas sin traducción se muestran en inglés). Para contribuir una traducción, completa o crea los archivos según [l10n/README.es.md](l10n/README.es.md) ([English](l10n/README.md)).
+
 ## Desarrollo
 
 - `F5` abre el Extension Development Host con `sample/sample.code-workspace`.
 - `npm test` ejecuta los tests de integración sobre `test-fixture/test.code-workspace`.
+- `npm run l10n:export` regenera `l10n/bundle.l10n.json` y `npm run l10n:check` valida las traducciones.

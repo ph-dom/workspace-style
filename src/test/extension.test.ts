@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { readStyles, sanitizeBadge, saveStyles } from '../config';
+import { uiLanguage, webviewStrings } from '../i18n';
 import { syncDerivedSettings } from '../sync';
 
 function readWorkspaceFile(): { text: string; json: any } {
@@ -24,6 +25,16 @@ suite('workspace-style', () => {
 		await saveStyles({});
 		await syncDerivedSettings();
 		fs.writeFileSync(vscode.workspace.workspaceFile!.fsPath, original);
+	});
+
+	test('webview strings come from the l10n bundle, with English as the fallback', () => {
+		const strings = webviewStrings();
+		for (const [key, value] of Object.entries(strings)) {
+			assert.ok(value, `string "${key}" is empty`);
+		}
+		if (uiLanguage() === 'en') {
+			assert.strictEqual(strings.noFolders, 'The workspace has no folders.');
+		}
 	});
 
 	test('sanitizeBadge respects the 2-char limit', () => {
