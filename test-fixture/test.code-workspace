@@ -1,0 +1,8 @@
+{
+	// comentario que debe conservarse
+	"folders": [
+		{ "path": "alpha" },
+		{ "path": "beta" }
+	],
+	"settings": {}
+}

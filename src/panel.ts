@@ -1,0 +1,118 @@
+import * as vscode from 'vscode';
+import { FolderStyles, PALETTE, readStyles, saveStyles } from './config';
+
+interface IncomingMessage {
+	type: 'ready' | 'save' | 'openWorkspaceFile';
+	styles?: FolderStyles;
+}
+
+/** Customization screen: workspace folders on the left, style options on the right. */
+export class StylePanel {
+	private static current: StylePanel | undefined;
+	private readonly disposables: vscode.Disposable[] = [];
+
+	static show(extensionUri: vscode.Uri): void {
+		if (StylePanel.current) {
+			StylePanel.current.panel.reveal();
+			return;
+		}
+		const panel = vscode.window.createWebviewPanel('workspaceStyle.panel', 'Workspace Style', vscode.ViewColumn.Active, {
+			enableScripts: true,
+			retainContextWhenHidden: true,
+			localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')],
+		});
+		StylePanel.current = new StylePanel(panel, extensionUri);
+	}
+
+	/** Pushes the latest config to the panel if it is open (e.g. after a manual edit of the file). */
+	static refresh(): void {
+		StylePanel.current?.postState();
+	}
+
+	private constructor(private readonly panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+		panel.iconPath = new vscode.ThemeIcon('symbol-color');
+		panel.webview.html = this.html(panel.webview, extensionUri);
+		this.disposables.push(
+			panel.onDidDispose(() => this.dispose()),
+			panel.webview.onDidReceiveMessage((msg: IncomingMessage) => this.onMessage(msg)),
+		);
+	}
+
+	private async onMessage(msg: IncomingMessage): Promise<void> {
+		switch (msg.type) {
+			case 'ready':
+				this.postState();
+				break;
+			case 'save':
+				try {
+					await saveStyles(msg.styles ?? {});
+					this.panel.webview.postMessage({ type: 'saved' });
+					vscode.window.setStatusBarMessage('$(check) Workspace Style: estilos guardados', 3000);
+				} catch (err) {
+					vscode.window.showErrorMessage(`Workspace Style: no se pudo guardar: ${String(err)}`);
+				}
+				break;
+			case 'openWorkspaceFile': {
+				const file = vscode.workspace.workspaceFile;
+				if (file && file.scheme === 'file') {
+					await vscode.window.showTextDocument(file, { preview: false });
+				}
+				break;
+			}
+		}
+	}
+
+	private postState(): void {
+		const styles = readStyles();
+		const folders = (vscode.workspace.workspaceFolders ?? []).map(f => ({ name: f.name, path: f.uri.fsPath }));
+		const file = vscode.workspace.workspaceFile;
+		this.panel.webview.postMessage({
+			type: 'state',
+			folders,
+			styles: Object.fromEntries(folders.filter(f => styles[f.name]).map(f => [f.name, styles[f.name]])),
+			palette: PALETTE,
+			workspaceFile: file?.scheme === 'file' ? file.fsPath : undefined,
+			untitledWorkspace: file?.scheme === 'untitled',
+		});
+	}
+
+	private html(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+		const media = (f: string) => webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'media', f));
+		const nonce = Array.from({ length: 32 }, () => Math.floor(Math.random() * 36).toString(36)).join('');
+		return /* html */ `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="${media('panel.css')}" rel="stylesheet">
+<title>Workspace Style</title>
+</head>
+<body>
+<div id="notice" class="notice" hidden></div>
+<div class="layout">
+	<aside>
+		<h2>Carpetas</h2>
+		<ul id="folders" role="listbox" aria-label="Carpetas del workspace"></ul>
+		<button id="auto" class="secondary" title="Asigna color y badge a las carpetas sin estilo">Auto-asignar</button>
+	</aside>
+	<main id="editor">
+		<p class="empty">El workspace no tiene carpetas.</p>
+	</main>
+</div>
+<footer>
+	<span id="dirty" hidden>Cambios sin guardar</span>
+	<button id="discard" class="secondary">Descartar</button>
+	<button id="save">Guardar en .code-workspace</button>
+</footer>
+<script nonce="${nonce}" src="${media('panel.js')}"></script>
+</body>
+</html>`;
+	}
+
+	private dispose(): void {
+		StylePanel.current = undefined;
+		this.disposables.forEach(d => d.dispose());
+		this.panel.dispose();
+	}
+}

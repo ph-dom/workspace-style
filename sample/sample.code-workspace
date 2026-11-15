@@ -1,0 +1,10 @@
+{
+	// Workspace de prueba para la extensión workspace-style.
+	"folders": [
+		{ "path": "api-backend" },
+		{ "path": "web-frontend" },
+		{ "path": "shared-lib" }
+	],
+	"settings": {
+	}
+}
