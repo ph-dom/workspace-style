@@ -54,3 +54,9 @@ La interfaz está en inglés y español, y sigue el idioma de VS Code (los idiom
 - `F5` abre el Extension Development Host con `sample/sample.code-workspace`.
 - `npm test` ejecuta los tests de integración sobre `test-fixture/test.code-workspace`.
 - `npm run l10n:export` regenera `l10n/bundle.l10n.json` y `npm run l10n:check` valida las traducciones.
+
+## Licencia
+
+Copyright (C) 2026 Pablo Henriquez
+
+Este programa es software libre: puedes redistribuirlo y/o modificarlo bajo los términos de la [GNU General Public License](LICENSE) publicada por la Free Software Foundation, ya sea la versión 3 de la licencia o (a tu elección) cualquier versión posterior.

@@ -3,6 +3,7 @@
   "displayName": "Workspace Style",
   "description": "%extension.description%",
   "version": "0.0.1",
+  "license": "GPL-3.0-or-later",
   "engines": {
     "vscode": "^1.146.0"
   },
