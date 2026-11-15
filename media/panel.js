@@ -3,7 +3,7 @@
 	// @ts-ignore acquireVsCodeApi is injected by VS Code.
 	const vscode = acquireVsCodeApi();
 
-	const EMOJIS = ['🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '⬛', '⬜', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '⭐', '🔥', '⚡', '🚀', '📦', '🧪', '🛠️', '🌐', '📱', '🗄️', '🔒', '📚', '🎨'];
+	const EMOJIS = ['👍', '❤️', '🔥', '⭐', '⚡', '☃️', '💡', '📌', '🤖', '🚀'];
 
 	/** @type {{name: string, path: string}[]} */
 	let folders = [];
@@ -86,7 +86,7 @@
 	function tabLabel(/** @type {any} */ s, /** @type {string} */ file) {
 		const text = [s.emoji, s.label].filter(Boolean).join(' ');
 		if (!text) { return file; }
-		return s.labelPosition === 'suffix' ? `${file} ${text}` : `${text} ${file}`;
+		return s.labelPosition === 'prefix' ? `${text} ${file}` : `${file} ${text}`;
 	}
 
 	function renderPreview() {
@@ -113,7 +113,7 @@
 
 		// Color
 		const picker = /** @type {HTMLInputElement} */ (el('input', {
-			type: 'color', value: s.color ?? palette[0] ?? '#4493f8', title: 'Color personalizado',
+			type: 'color', value: s.color ?? palette[0] ?? '#1E56D9', title: 'Color personalizado',
 			oninput: (/** @type {Event} */ e) => { update('color', /** @type {HTMLInputElement} */ (e.target).value); markSwatch(); },
 		}));
 		const swatches = el('div', { class: 'swatches', role: 'group', 'aria-label': 'Paleta' }, [
@@ -126,7 +126,7 @@
 		]);
 		function markSwatch() {
 			const cur = (draft[selected]?.color ?? '').toLowerCase();
-			swatches.querySelectorAll('.swatch').forEach(b => b.setAttribute('aria-pressed', String((b.getAttribute('data-color') ?? '') === cur)));
+			swatches.querySelectorAll('.swatch').forEach(b => b.setAttribute('aria-pressed', String((b.getAttribute('data-color') ?? '').toLowerCase() === cur)));
 		}
 
 		// Text inputs
@@ -134,15 +134,15 @@
 			type: 'text', value: s[key] ?? '', ...extra,
 			oninput: (/** @type {Event} */ e) => update(key, /** @type {HTMLInputElement} */ (e.target).value.trim()),
 		}));
-		const badgeInput = textInput('badge', { class: 'short', maxlength: 2, 'aria-label': 'Badge', placeholder: 'AP' });
-		const emojiInput = textInput('emoji', { class: 'short', maxlength: 8, 'aria-label': 'Emoji', placeholder: '🟦' });
-		const labelInput = textInput('label', { class: 'mid', maxlength: 24, 'aria-label': 'Texto en el nombre', placeholder: 'API ·' });
+		const badgeInput = textInput('badge', { class: 'short', maxlength: 2, 'aria-label': 'Badge' });
+		const emojiInput = textInput('emoji', { class: 'short', maxlength: 8, 'aria-label': 'Emoji' });
+		const labelInput = textInput('label', { class: 'mid', maxlength: 24, 'aria-label': 'Texto en el nombre' });
 
 		const position = /** @type {HTMLSelectElement} */ (el('select', {
 			'aria-label': 'Posición',
-			onchange: (/** @type {Event} */ e) => update('labelPosition', /** @type {HTMLSelectElement} */ (e.target).value === 'suffix' ? 'suffix' : undefined),
-		}, [el('option', { value: 'prefix', text: 'Antes del nombre' }), el('option', { value: 'suffix', text: 'Después del nombre' })]));
-		position.value = s.labelPosition === 'suffix' ? 'suffix' : 'prefix';
+			onchange: (/** @type {Event} */ e) => update('labelPosition', /** @type {HTMLSelectElement} */ (e.target).value === 'prefix' ? 'prefix' : undefined),
+		}, [el('option', { value: 'suffix', text: 'Después del nombre' }), el('option', { value: 'prefix', text: 'Antes del nombre' })]));
+		position.value = s.labelPosition === 'prefix' ? 'prefix' : 'suffix';
 
 		const emojiButtons = (/** @type {HTMLInputElement} */ target, /** @type {string} */ key) => el('div', { class: 'row' }, EMOJIS.map(em =>
 			el('button', { class: 'emoji', text: em, title: em, onclick: () => { target.value = em; update(key, em); } })));
@@ -181,14 +181,14 @@
 
 	// ---------------------------------------------------------------- actions
 	$('auto').addEventListener('click', () => {
-		const used = new Set(Object.values(draft).map(s => s?.color).filter(Boolean));
+		const used = new Set(Object.values(draft).map(s => s?.color?.toLowerCase()).filter(Boolean));
 		let p = 0;
 		for (const f of folders) {
 			const s = styleOf(f.name);
 			if (!s.color) {
-				while (p < palette.length && used.has(palette[p])) { p++; }
+				while (p < palette.length && used.has(palette[p].toLowerCase())) { p++; }
 				s.color = palette[p % palette.length];
-				used.add(s.color);
+				used.add(s.color.toLowerCase());
 				p++;
 			}
 			s.badge ??= initials(f.name);

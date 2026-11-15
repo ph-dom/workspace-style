@@ -17,13 +17,13 @@ Identifica de qué carpeta o repositorio viene cada pestaña en un workspace mul
 ```jsonc
 "settings": {
   "workspaceStyle.folders": {
-    "api-backend": { "color": "#e5534b", "badge": "AB", "emoji": "🟥", "label": "API" }
+    "api-backend": { "color": "#E34234", "badge": "AB", "emoji": "🚀", "label": "API" }
   },
   // Generado automáticamente a partir de lo anterior:
-  "workbench.colorCustomizations": { "workspaceStyle.slot1": "#e5534b" },
+  "workbench.colorCustomizations": { "workspaceStyle.slot1": "#E34234" },
   "workbench.editor.customLabels.patterns": {
-    "api-backend/**/?*.*": "🟥 API ${filename}.${extname}",
-    "api-backend/**": "🟥 API ${filename}"
+    "api-backend/**/?*.*": "${filename}.${extname} 🚀 API",
+    "api-backend/**": "${filename} 🚀 API"
   },
   "workspaceStyle.managedLabelPatterns": ["api-backend/**/?*.*", "api-backend/**"]
 }
@@ -35,8 +35,8 @@ Si se edita `workspaceStyle.folders` a mano, los ajustes derivados se regeneran 
 
 - No se puede cambiar el **icono** del archivo por repo, porque depende del tema de iconos. Usa el emoji en su lugar.
 - No se puede cambiar el **fondo o borde de una pestaña** por separado, ni su fuente o CSS.
-- Los colores de **git** (archivo modificado, sin rastrear) pueden tener prioridad sobre el color de la carpeta.
-- Hay un máximo de 20 carpetas con color (slots `workspaceStyle.slot1..20`).
+- Los colores de **git** reemplazan al color de la carpeta cuando el archivo tiene cambios: verde si es nuevo o sin rastrear, amarillo si está modificado. La API no permite darle más prioridad a la extensión, así que en esos casos la pestaña se identifica por la letra de git (`U`, `M`) y por el emoji o texto del nombre. Por eso la paleta no incluye verdes ni amarillos. Si eliges uno con el selector libre, se confundirá con git.
+- No hay límite de carpetas con color: las carpetas que comparten un color comparten un slot. VS Code obliga a declarar los colores de antemano, así que se pueden usar hasta 20 colores distintos a la vez (slots `workspaceStyle.slot1..20`, uno por cada color de la paleta). Si usas más de 20 colores personalizados, las carpetas que sobran se quedan sin color, pero conservan el badge y el texto en el nombre.
 - Si dos carpetas tienen el mismo nombre de directorio, sus patrones usan la ruta absoluta, que no es portable entre máquinas.
 
 ## Configuración

@@ -34,15 +34,15 @@ suite('workspace-style', () => {
 
 	test('styles and derived settings are written to the .code-workspace', async () => {
 		await saveStyles({
-			alpha: { color: '#FF0000', badge: 'AL', emoji: '🟦', label: 'A' },
-			beta: { color: '#00ff00', label: 'B', labelPosition: 'suffix' },
+			alpha: { color: '#FF0000', badge: 'AL', emoji: '🟦', label: 'A', labelPosition: 'prefix' },
+			beta: { color: '#00ff00', label: 'B' },
 		});
 		await syncDerivedSettings();
 
 		const { text, json } = readWorkspaceFile();
 		const s = json.settings;
 		assert.ok(text.includes('// comentario que debe conservarse'), 'comments are preserved');
-		assert.deepStrictEqual(s['workspaceStyle.folders'].alpha, { color: '#ff0000', badge: 'AL', emoji: '🟦', label: 'A' });
+		assert.deepStrictEqual(s['workspaceStyle.folders'].alpha, { color: '#ff0000', badge: 'AL', emoji: '🟦', label: 'A', labelPosition: 'prefix' });
 		assert.strictEqual(s['workbench.colorCustomizations']['workspaceStyle.slot1'], '#ff0000');
 		assert.strictEqual(s['workbench.colorCustomizations']['workspaceStyle.slot2'], '#00ff00');
 
@@ -50,7 +50,15 @@ suite('workspace-style', () => {
 		assert.strictEqual(patterns['alpha/**/?*.*'], '🟦 A ${filename}.${extname}');
 		assert.strictEqual(patterns['alpha/**'], '🟦 A ${filename}');
 		assert.strictEqual(patterns['beta/**/?*.*'], '${filename}.${extname} B');
-		assert.deepStrictEqual(readStyles().beta.labelPosition, 'suffix');
+		assert.strictEqual(readStyles().beta.labelPosition, undefined, 'suffix is the default and is not stored');
+	});
+
+	test('folders that share a color share a slot', async () => {
+		await saveStyles({ alpha: { color: '#ABCDEF' }, beta: { color: '#abcdef' } });
+		await syncDerivedSettings();
+
+		const colors = readWorkspaceFile().json.settings['workbench.colorCustomizations'];
+		assert.deepStrictEqual(colors, { 'workspaceStyle.slot1': '#abcdef' });
 	});
 
 	test('user patterns are kept and managed ones are removed on reset', async () => {

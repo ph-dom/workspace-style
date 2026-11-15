@@ -6,5 +6,43 @@
 		{ "path": "shared-lib" }
 	],
 	"settings": {
+		"workspaceStyle.folders": {
+			"api-backend": {
+				"color": "#d926a9",
+				"badge": "⭐",
+				"label": "BACK"
+			},
+			"web-frontend": {
+				"color": "#1e56d9",
+				"badge": "🔥",
+				"label": "FRONT"
+			},
+			"shared-lib": {
+				"color": "#7c3aed",
+				"badge": "🚀",
+				"label": "SHAR"
+			}
+		},
+		"workbench.colorCustomizations": {
+			"workspaceStyle.slot1": "#d926a9",
+			"workspaceStyle.slot2": "#1e56d9",
+			"workspaceStyle.slot3": "#7c3aed"
+		},
+		"workbench.editor.customLabels.patterns": {
+			"api-backend/**/?*.*": "${filename}.${extname} BACK",
+			"api-backend/**": "${filename} BACK",
+			"web-frontend/**/?*.*": "${filename}.${extname} FRONT",
+			"web-frontend/**": "${filename} FRONT",
+			"shared-lib/**/?*.*": "${filename}.${extname} SHAR",
+			"shared-lib/**": "${filename} SHAR"
+		},
+		"workspaceStyle.managedLabelPatterns": [
+			"api-backend/**/?*.*",
+			"api-backend/**",
+			"web-frontend/**/?*.*",
+			"web-frontend/**",
+			"shared-lib/**/?*.*",
+			"shared-lib/**"
+		]
 	}
 }

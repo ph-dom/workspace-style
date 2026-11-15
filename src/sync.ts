@@ -126,7 +126,7 @@ function buildPatterns(
 		? escapeGlob(folder.uri.path.replace(/\/$/, ''))
 		: escapeGlob(base);
 	const withText = (name: string) =>
-		style?.labelPosition === 'suffix' ? `${name} ${text}` : `${text} ${name}`;
+		style?.labelPosition === 'prefix' ? `${text} ${name}` : `${name} ${text}`;
 	return [
 		[`${glob}/**/?*.*`, withText('${filename}.${extname}')],
 		[`${glob}/**`, withText('${filename}')],

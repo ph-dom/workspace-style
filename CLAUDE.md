@@ -19,7 +19,7 @@ A VS Code extension (`workspace-style`) for multi-root workspaces. It marks each
 
 VS Code lets an extension style a tab in only two ways, and the design is built around them:
 
-1. **File decorations** (`src/decorations.ts`): add the badge and the label color in tabs, the Explorer, and Open Editors. A decoration color must be a `ThemeColor` id, not a hex value. So `package.json` declares 20 color slots (`workspaceStyle.slot1..20`). The user's hex values are mapped onto those slots through `workbench.colorCustomizations`.
+1. **File decorations** (`src/decorations.ts`): add the badge and the label color in tabs, the Explorer, and Open Editors. A decoration color must be a `ThemeColor` id, not a hex value. So `package.json` declares 20 color slots (`workspaceStyle.slot1..20`), one per palette color. The user's hex values are mapped onto those slots through `workbench.colorCustomizations`.
 2. **Custom labels** (`workbench.editor.customLabels.patterns`): add the emoji or text to the tab title.
 
 The extension cannot change the file icon, the background of a single tab, or the tab's CSS. See the README for the full list of limits.
@@ -31,7 +31,7 @@ The extension cannot change the file icon, the background of a single tab, or th
   - `workbench.colorCustomizations`: entries whose key starts with `workspaceStyle.` are owned by the extension. Other keys are kept.
   - `workbench.editor.customLabels.patterns`: the generated keys are tracked in `workspaceStyle.managedLabelPatterns`, so the user's own patterns are left alone.
 - Sync runs on every `workspaceStyle.*` config change and on every change to the workspace folders. It only writes when a value actually changes, so its own writes don't cause a loop. Calls go through a promise queue so they run one at a time.
-- Slots are not stored. `computeSlots` derives them from workspace-folder order (`src/config.ts`), so they shift when folders are added or reordered. That's fine because sync rewrites all of them.
+- Slots are not stored. `computeSlots` (`src/config.ts`) allocates one slot per distinct color (case-insensitive), in workspace-folder order, so folders sharing a color share a slot. Slots shift when folders or colors change. That's fine because sync rewrites all of them.
 - `StyleState` is a cache of the parsed config. The decoration provider and the status bar read from it, and `extension.ts` reloads it on changes.
 
 ### Label pattern details (from VS Code's customEditorLabelService)

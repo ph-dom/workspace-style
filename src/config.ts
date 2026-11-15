@@ -2,15 +2,27 @@ import * as vscode from 'vscode';
 
 export const SECTION = 'workspaceStyle';
 
-/** Number of color slots declared in package.json (`workspaceStyle.slot1..N`). */
+/**
+ * Number of color slots declared in package.json (`workspaceStyle.slot1..N`).
+ * One slot per distinct color (not per folder), sized to fit the whole palette.
+ */
 export const SLOT_COUNT = 20;
 
-/** Default palette. Must stay in sync with the defaults in package.json. */
+/**
+ * Palette offered in the panel. Its entries are also the slot defaults in package.json
+ * (keep in sync). The first row mixes colors for dark and light themes; the
+ * second row is tuned for dark/black backgrounds (>= 6:1 contrast on #1E1E1E) and kept
+ * visually apart from each other, from git colors and from the default tab text color.
+ * Greens, teals and yellows are excluded on purpose: git decorations (untracked /
+ * added = green, modified = yellow) override the extension's color, so those hues
+ * would make a folder color indistinguishable from a git status.
+ */
 export const PALETTE = [
-	'#e5534b', '#f0883e', '#d4a72c', '#57ab5a', '#2fbfa0',
-	'#39c5cf', '#4493f8', '#6e7bf2', '#a371f7', '#db61a2',
-	'#b62324', '#bc4c00', '#9a6700', '#1a7f37', '#0a8a7a',
-	'#0969da', '#8250df', '#bf3989', '#8b949e', '#c9d1d9',
+	'#E34234', '#1E56D9', '#F25C19', '#D926A9', '#7C3AED',
+	'#F06464', '#EC1C77', '#1D8FE1', '#C81E4B', '#5A3FD6',
+	// Dark / black backgrounds
+	'#FF9E64', '#FFB3D9', '#C9A2FF', '#7AA2FF', '#5FD4FF',
+	'#FF5FC1', '#E57CFF', '#FF8FA3', '#C387C3', '#E18700',
 ];
 
 export type LabelPosition = 'prefix' | 'suffix';
@@ -24,7 +36,7 @@ export interface FolderStyle {
 	emoji?: string;
 	/** Text (abbreviation) added to the tab title. */
 	label?: string;
-	/** Where emoji + label go relative to the file name. */
+	/** Where emoji + label go relative to the file name (default: after it). */
 	labelPosition?: LabelPosition;
 }
 
@@ -80,19 +92,30 @@ export function getFlag(key: string, fallback = true): boolean {
 }
 
 /**
- * Assigns a color slot to each workspace folder that has a valid color, in workspace order.
+ * Assigns a color slot to each workspace folder that has a valid color. Slots are allocated
+ * per distinct color (case-insensitive) in workspace order, so folders that share a color
+ * share a slot and the number of colored folders is unlimited. Only folders whose color is
+ * new once all SLOT_COUNT slots are taken stay uncolored (they keep their badge and label).
  * Slots are derived (not stored), so the `.code-workspace` only holds the hex colors.
  */
 export function computeSlots(styles: FolderStyles): Map<string, number> {
 	const slots = new Map<string, number>();
-	let next = 0;
+	const byColor = new Map<string, number>();
 	for (const folder of vscode.workspace.workspaceFolders ?? []) {
-		if (next >= SLOT_COUNT) {
-			break;
+		const color = styles[folder.name]?.color;
+		if (!isValidColor(color)) {
+			continue;
 		}
-		if (isValidColor(styles[folder.name]?.color)) {
-			slots.set(folder.name, next++);
+		const key = color.toLowerCase();
+		let slot = byColor.get(key);
+		if (slot === undefined) {
+			if (byColor.size >= SLOT_COUNT) {
+				continue;
+			}
+			slot = byColor.size;
+			byColor.set(key, slot);
 		}
+		slots.set(folder.name, slot);
 	}
 	return slots;
 }
@@ -164,8 +187,8 @@ function cleanStyle(style: FolderStyle): FolderStyle | undefined {
 	if (style.label?.trim()) {
 		out.label = style.label.trim();
 	}
-	if (style.labelPosition === 'suffix') {
-		out.labelPosition = 'suffix';
+	if (style.labelPosition === 'prefix') {
+		out.labelPosition = 'prefix';
 	}
 	return Object.keys(out).length ? out : undefined;
 }
