@@ -1,10 +1,19 @@
 {
   "name": "workspace-style",
   "displayName": "Workspace Style",
+  "publisher": "pablohenriquez",
   "description": "%extension.description%",
   "version": "0.0.1",
   "license": "GPL-3.0-or-later",
   "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ph-dom/workspace-style.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ph-dom/workspace-style/issues"
+  },
+  "homepage": "https://github.com/ph-dom/workspace-style#readme",
   "engines": {
     "vscode": "^1.146.0"
   },
