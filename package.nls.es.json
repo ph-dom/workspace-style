@@ -1,5 +1,5 @@
 {
-  "extension.description": "Identifica con colores, badges y prefijos de qué carpeta o repositorio viene cada pestaña en un workspace multi-root.",
+  "extension.description": "Marca las pestañas del editor con su carpeta o repo en workspaces multi-root: label de color, badge y prefijo con emoji o texto. Ve de un vistazo a qué repo pertenece cada archivo.",
   "command.openSettings.title": "Personalizar carpetas",
   "command.resync.title": "Re-aplicar estilos",
   "config.folders.description": "Estilo por carpeta del workspace (la clave es el nombre de la carpeta). Se edita desde **Workspace Style: Personalizar carpetas**.",

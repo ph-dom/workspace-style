@@ -8,33 +8,33 @@
 	"settings": {
 		"workspaceStyle.folders": {
 			"api-backend": {
-				"color": "#d926a9",
-				"badge": "⭐",
+				"color": "#e34234",
+				"badge": "🚀",
 				"label": "BACK"
 			},
 			"web-frontend": {
-				"color": "#1e56d9",
-				"badge": "🔥",
+				"color": "#1d8fe1",
+				"badge": "⭐",
 				"label": "FRONT"
 			},
 			"shared-lib": {
-				"color": "#7c3aed",
-				"badge": "🚀",
-				"label": "SHAR"
+				"color": "#5a3fd6",
+				"badge": "🤖",
+				"label": "SHARED"
 			}
 		},
 		"workbench.colorCustomizations": {
-			"workspaceStyle.slot1": "#d926a9",
-			"workspaceStyle.slot2": "#1e56d9",
-			"workspaceStyle.slot3": "#7c3aed"
+			"workspaceStyle.slot1": "#e34234",
+			"workspaceStyle.slot2": "#1d8fe1",
+			"workspaceStyle.slot3": "#5a3fd6"
 		},
 		"workbench.editor.customLabels.patterns": {
 			"api-backend/**/?*.*": "${filename}.${extname} BACK",
 			"api-backend/**": "${filename} BACK",
 			"web-frontend/**/?*.*": "${filename}.${extname} FRONT",
 			"web-frontend/**": "${filename} FRONT",
-			"shared-lib/**/?*.*": "${filename}.${extname} SHAR",
-			"shared-lib/**": "${filename} SHAR"
+			"shared-lib/**/?*.*": "${filename}.${extname} SHARED",
+			"shared-lib/**": "${filename} SHARED"
 		},
 		"workspaceStyle.managedLabelPatterns": [
 			"api-backend/**/?*.*",

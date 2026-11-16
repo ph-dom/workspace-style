@@ -1,5 +1,5 @@
 {
-  "extension.description": "Identify with colors, badges, and prefixes which folder or repository each tab comes from in a multi-root workspace.",
+  "extension.description": "Mark editor tabs with their folder or repo in multi-root workspaces: colored label, badge, and emoji or text prefix. See at a glance which repo each file belongs to.",
   "command.openSettings.title": "Customize folders",
   "command.resync.title": "Re-apply styles",
   "config.folders.description": "Style per workspace folder (the key is the folder name). Edit it with **Workspace Style: Customize folders**.",

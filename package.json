@@ -1,6 +1,6 @@
 {
   "name": "workspace-style",
-  "displayName": "Workspace Style",
+  "displayName": "Workspace Style – Repo Tab Colors (Multi-root)",
   "publisher": "pablohenriquez",
   "description": "%extension.description%",
   "version": "0.0.1",
@@ -18,7 +18,28 @@
     "vscode": "^1.146.0"
   },
   "categories": [
+    "Themes",
+    "Visualization",
     "Other"
+  ],
+  "keywords": [
+    "multi-root",
+    "workspace",
+    "monorepo",
+    "multiple repositories",
+    "tabs",
+    "tab color",
+    "editor tabs",
+    "folder color",
+    "repo color",
+    "badge",
+    "emoji",
+    "label",
+    "explorer",
+    "status bar",
+    "workspace color",
+    "organize",
+    "productivity"
   ],
   "activationEvents": [
     "onStartupFinished"
