@@ -2,6 +2,8 @@
 
 Identifica de qué carpeta o repositorio viene cada pestaña en un workspace multi-root (`.code-workspace`).
 
+![Demo de Workspace Style](images/demo.gif)
+
 ## Uso
 
 `Ctrl+Shift+P` → **Workspace Style: Personalizar carpetas**. A la izquierda está la lista de carpetas del workspace y a la derecha las opciones:

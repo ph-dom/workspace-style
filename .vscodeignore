@@ -16,3 +16,4 @@ l10n/README*.md
 media/icon.svg
 out/test/**
 CLAUDE.md
+images/**

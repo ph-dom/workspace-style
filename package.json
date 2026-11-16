@@ -3,7 +3,7 @@
   "displayName": "Workspace Style – Repo Tab Colors (Multi-root)",
   "publisher": "pablohenriquez",
   "description": "%extension.description%",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "GPL-3.0-or-later",
   "icon": "media/icon.png",
   "repository": {
